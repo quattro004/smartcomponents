@@ -8,10 +8,11 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\src\SmartComponents.AspNetCore\SmartComponents.AspNetCore.csproj" />
-        <ProjectReference Include="..\..\..\src\SmartComponents.Inference.OpenAI\SmartComponents.Inference.OpenAI.csproj" />
         <ProjectReference Include="..\..\..\src\SmartComponents.LocalEmbeddings\SmartComponents.LocalEmbeddings.csproj" />
         <ProjectReference Include="..\TestBlazorApp.Client\TestBlazorApp.Client.csproj" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+        <PackageReference Include="Microsoft.Extensions.AI" />
+        <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
     </ItemGroup>
 
     <ItemGroup>

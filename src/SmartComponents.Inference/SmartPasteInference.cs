@@ -7,13 +7,13 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using SmartComponents.StaticAssets.Inference;
+using Microsoft.Extensions.AI;
 
 namespace SmartComponents.Inference;
 
 public class SmartPasteInference
 {
-    private static readonly JsonSerializerOptions jsonSerializerOptions
-        = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+    private static readonly JsonSerializerOptions jsonSerializerOptions = new(JsonSerializerDefaults.Web);
 
     public class SmartPasteRequestData
     {
@@ -35,7 +35,7 @@ public class SmartPasteInference
         public string? Response { get; init; }
     }
 
-    public Task<SmartPasteResponseData> GetFormCompletionsAsync(IInferenceBackend inferenceBackend, string dataJson)
+    public Task<SmartPasteResponseData> GetFormCompletionsAsync(IChatClient inferenceBackend, string dataJson)
     {
         var data = JsonSerializer.Deserialize<SmartPasteRequestData>(dataJson, jsonSerializerOptions)!;
         if (data.FormFields is null || data.FormFields.Length == 0 || string.IsNullOrEmpty(data.ClipboardContents))
@@ -65,23 +65,26 @@ USER_DATA: {data.ClipboardContents}
         return new ChatParameters
         {
             Messages = [
-                new (ChatMessageRole.System, systemMessage),
-                new (ChatMessageRole.User, prompt),
+                new (ChatRole.System, systemMessage),
+                new (ChatRole.User, prompt),
             ],
-            Temperature = 0,
-            TopP = 1,
-            MaxTokens = 2000,
-            FrequencyPenalty = 0.1f,
-            PresencePenalty = 0,
+            Options = new ChatOptions
+            {
+                Temperature = 0,
+                TopP = 1,
+                MaxOutputTokens = 2000,
+                FrequencyPenalty = 0.1f,
+                PresencePenalty = 0
+            },
             RespondJson = true,
         };
     }
 
-    public virtual async Task<SmartPasteResponseData> GetFormCompletionsAsync(IInferenceBackend inferenceBackend, SmartPasteRequestData requestData)
+    public virtual async Task<SmartPasteResponseData> GetFormCompletionsAsync(IChatClient inferenceBackend, SmartPasteRequestData requestData)
     {
-        var chatOptions = BuildPrompt(requestData);
-        var completionsResponse = await inferenceBackend.GetChatResponseAsync(chatOptions);
-        return new SmartPasteResponseData { Response = completionsResponse };
+        var chatParameters = BuildPrompt(requestData);
+        var completionsResponse = await inferenceBackend.GetResponseAsync(chatParameters.Messages, chatParameters.Options);
+        return new SmartPasteResponseData { Response = completionsResponse.Text };
     }
 
     private static string ToFieldOutputExamples(FormField[] fields)

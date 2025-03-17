@@ -2,8 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using E2ETests;
+using Microsoft.Extensions.AI;
 using SmartComponents.Inference;
-using SmartComponents.Inference.OpenAI;
 
 namespace TestBlazorServerNet6App;
 
@@ -17,7 +17,7 @@ public class Program
         builder.Services.AddScoped<SmartPasteInference, SmartPasteInferenceForTests>();
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
-        builder.Services.AddSmartComponents().WithInferenceBackend<OpenAIInferenceBackend>();
+        builder.Services.AddSmartComponents().WithInferenceBackend<IChatClient>();
         builder.Configuration.AddRepoSharedConfig();
 
         var app = builder.Build();

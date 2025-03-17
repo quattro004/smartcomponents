@@ -2,8 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using E2ETests;
+using Microsoft.Extensions.AI;
 using SmartComponents.Inference;
-using SmartComponents.Inference.OpenAI;
 using SmartComponents.LocalEmbeddings;
 
 namespace TestMvcApp;
@@ -19,7 +19,7 @@ public class Program
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<SmartPasteInference, SmartPasteInferenceForTests>();
         builder.Services.AddSmartComponents()
-            .WithInferenceBackend<OpenAIInferenceBackend>()
+            .WithInferenceBackend<IChatClient>()
             .WithAntiforgeryValidation(); // This doesn't benefit most apps, but we'll validate it works in E2E tests
 
         var app = builder.Build();

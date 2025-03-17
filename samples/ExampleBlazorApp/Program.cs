@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using ExampleBlazorApp.Components;
-using SmartComponents.Inference.OpenAI;
 using SmartComponents.LocalEmbeddings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +11,6 @@ builder.Configuration.AddRepoSharedConfig();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddSmartComponents()
-    .WithInferenceBackend<OpenAIInferenceBackend>()
     .WithAntiforgeryValidation();
 
 builder.Services.AddSingleton<LocalEmbedder>();

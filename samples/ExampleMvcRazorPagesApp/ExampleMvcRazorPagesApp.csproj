@@ -9,12 +9,15 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\SmartComponents.AspNetCore\SmartComponents.AspNetCore.csproj" />
-        <ProjectReference Include="..\..\src\SmartComponents.Inference.OpenAI\SmartComponents.Inference.OpenAI.csproj" />
         <ProjectReference Include="..\..\src\SmartComponents.LocalEmbeddings\SmartComponents.LocalEmbeddings.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <Compile Include="$(SharedSrcRoot)RepoSharedConfigUtil.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.AI.Abstractions" />
     </ItemGroup>
 
     <!-- Only needed when referencing the dependencies as projects. For package references, these are imported automatically. -->

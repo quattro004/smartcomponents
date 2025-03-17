@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SmartComponents.AspNetCore;
 using SmartComponents.Inference;
 using SmartComponents.Infrastructure;
-using SmartComponents.StaticAssets.Inference;
 
 namespace Microsoft.AspNetCore.Builder;
 
@@ -40,7 +40,7 @@ public static class SmartComponentsServiceCollectionExtensions
 
             builder.UseEndpoints(app =>
             {
-                var smartPasteEndpoint = app.MapPost("/_smartcomponents/smartpaste", async ([FromServices] IInferenceBackend inference, HttpContext httpContext, [FromServices] IAntiforgery antiforgery, [FromServices] SmartPasteInference smartPasteInference) =>
+                var smartPasteEndpoint = app.MapPost("/_smartcomponents/smartpaste", async ([FromServices] IChatClient inference, HttpContext httpContext, [FromServices] IAntiforgery antiforgery, [FromServices] SmartPasteInference smartPasteInference) =>
                 {
                     // The rules about whether antiforgery are enabled by default vary across different
                     // ASP.NET Core versions. To make it consistent, we disable the default enablement on
@@ -62,7 +62,7 @@ public static class SmartComponentsServiceCollectionExtensions
                     return result.BadRequest ? Results.BadRequest() : Results.Content(result.Response!);
                 });
 
-                var smartTextAreaEndpoint = app.MapPost("/_smartcomponents/smarttextarea", async ([FromServices] IInferenceBackend inference, HttpContext httpContext, [FromServices] IAntiforgery antiforgery, [FromServices] SmartTextAreaInference smartTextAreaInference) =>
+                var smartTextAreaEndpoint = app.MapPost("/_smartcomponents/smarttextarea", async ([FromServices] IChatClient inference, HttpContext httpContext, [FromServices] IAntiforgery antiforgery, [FromServices] SmartTextAreaInference smartTextAreaInference) =>
                 {
                     if (validateAntiforgery)
                     {
