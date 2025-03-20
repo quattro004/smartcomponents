@@ -3,6 +3,7 @@
 
 using E2ETests;
 using Microsoft.Extensions.AI;
+using OpenAI;
 using SmartComponents.Inference;
 using SmartComponents.LocalEmbeddings;
 
@@ -19,8 +20,13 @@ public class Program
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<SmartPasteInference, SmartPasteInferenceForTests>();
         builder.Services.AddSmartComponents()
-            .WithInferenceBackend<IChatClient>()
             .WithAntiforgeryValidation(); // This doesn't benefit most apps, but we'll validate it works in E2E tests
+
+        builder.Services.AddSingleton(new OpenAIClient(builder.Configuration["AI:OpenAI:Key"]));
+        builder.Services.AddChatClient(services =>
+            services.GetRequiredService<OpenAIClient>().AsChatClient(builder.Configuration["AI:OpenAI:Chat:ModelId"] ?? "gpt-4o-mini"));
+        builder.Services.AddEmbeddingGenerator(services =>
+            services.GetRequiredService<OpenAIClient>().AsEmbeddingGenerator(builder.Configuration["AI:OpenAI:Embedding:ModelId"] ?? "text-embedding-3-small"));
 
         var app = builder.Build();
 

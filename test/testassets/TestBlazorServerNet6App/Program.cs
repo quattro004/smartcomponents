@@ -3,6 +3,7 @@
 
 using E2ETests;
 using Microsoft.Extensions.AI;
+using OpenAI;
 using SmartComponents.Inference;
 
 namespace TestBlazorServerNet6App;
@@ -17,8 +18,14 @@ public class Program
         builder.Services.AddScoped<SmartPasteInference, SmartPasteInferenceForTests>();
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
-        builder.Services.AddSmartComponents().WithInferenceBackend<IChatClient>();
+        builder.Services.AddSmartComponents();
         builder.Configuration.AddRepoSharedConfig();
+
+        builder.Services.AddSingleton(new OpenAIClient(builder.Configuration["AI:OpenAI:Key"]));
+        builder.Services.AddChatClient(services =>
+            services.GetRequiredService<OpenAIClient>().AsChatClient(builder.Configuration["AI:OpenAI:Chat:ModelId"] ?? "gpt-4o-mini"));
+        builder.Services.AddEmbeddingGenerator(services =>
+            services.GetRequiredService<OpenAIClient>().AsEmbeddingGenerator(builder.Configuration["AI:OpenAI:Embedding:ModelId"] ?? "text-embedding-3-small"));
 
         var app = builder.Build();
 

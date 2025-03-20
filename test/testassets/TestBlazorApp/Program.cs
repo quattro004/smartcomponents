@@ -23,7 +23,6 @@ public class Program
             .AddInteractiveWebAssemblyComponents();
         builder.Services.AddScoped<SmartPasteInference, SmartPasteInferenceForTests>();
         builder.Services.AddSmartComponents()
-            .WithInferenceBackend<IChatClient>()
             .WithAntiforgeryValidation(); // This doesn't benefit most apps, but we'll validate it works in E2E tests
 
         builder.Services.AddSingleton(new OpenAIClient(builder.Configuration["AI:OpenAI:Key"]));

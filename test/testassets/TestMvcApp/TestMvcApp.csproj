@@ -18,6 +18,11 @@
         <Compile Include="..\TestBlazorApp\TestData.cs" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.AI" />
+      <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
+    </ItemGroup>
+
     <!-- Only needed when referencing the dependencies as projects. For package references, these are imported automatically. -->
     <Import Project="$(RepoRoot)src\SmartComponents.LocalEmbeddings\build\SmartComponents.LocalEmbeddings.targets" />
 
