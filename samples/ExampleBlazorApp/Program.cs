@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using ExampleBlazorApp.Components;
+using Microsoft.Extensions.AI;
+using OpenAI;
 using SmartComponents.LocalEmbeddings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +16,11 @@ builder.Services.AddSmartComponents()
     .WithAntiforgeryValidation();
 
 builder.Services.AddSingleton<LocalEmbedder>();
-
+builder.Services.AddSingleton(new OpenAIClient(builder.Configuration["AI:OpenAI:Key"]));
+builder.Services.AddChatClient(services =>
+    services.GetRequiredService<OpenAIClient>().AsChatClient(builder.Configuration["AI:OpenAI:Chat:ModelId"] ?? "gpt-4o-mini"));
+builder.Services.AddEmbeddingGenerator(services =>
+    services.GetRequiredService<OpenAIClient>().AsEmbeddingGenerator(builder.Configuration["AI:OpenAI:Embedding:ModelId"] ?? "text-embedding-3-small"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
