@@ -15,7 +15,8 @@ builder.Services.AddSmartComponents()
     .WithAntiforgeryValidation();
 
 builder.Services.AddSingleton<LocalEmbedder>();
-builder.Services.AddSingleton(new OpenAIClient(builder.Configuration["AI:OpenAI:Key"]));
+// Note: the StartupKey value is just there so the app will start up. 
+builder.Services.AddSingleton(new OpenAIClient(builder.Configuration["AI:OpenAI:Key"] ?? "StartupKey"));
 builder.Services.AddChatClient(services =>
     services.GetRequiredService<OpenAIClient>().AsChatClient(builder.Configuration["AI:OpenAI:Chat:ModelId"] ?? "gpt-4o-mini"));
 builder.Services.AddEmbeddingGenerator(services =>
