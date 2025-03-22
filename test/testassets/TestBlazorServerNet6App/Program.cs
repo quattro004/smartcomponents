@@ -24,7 +24,11 @@ public class Program
         // Note: the StartupKey value is just there so the app will start up. 
         builder.Services.AddSingleton(new OpenAIClient(builder.Configuration["AI:OpenAI:Key"] ?? "StartupKey"));
         builder.Services.AddChatClient(services =>
-            services.GetRequiredService<OpenAIClient>().AsChatClient(builder.Configuration["AI:OpenAI:Chat:ModelId"] ?? "gpt-4o-mini"));
+        {
+            var chatClient = new SmartComponentsChatClient(services.GetRequiredService<OpenAIClient>()
+                .AsChatClient(builder.Configuration["AI:OpenAI:Chat:ModelId"] ?? "gpt-4o-mini"));
+            return chatClient;
+        });
         builder.Services.AddEmbeddingGenerator(services =>
             services.GetRequiredService<OpenAIClient>().AsEmbeddingGenerator(builder.Configuration["AI:OpenAI:Embedding:ModelId"] ?? "text-embedding-3-small"));
 
