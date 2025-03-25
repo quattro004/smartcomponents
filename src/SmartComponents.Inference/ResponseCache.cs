@@ -20,9 +20,9 @@ namespace SmartComponents.Inference;
 
 internal static class ResponseCache
 {
-    static bool IsEnabled = Environment.GetEnvironmentVariable("SMARTCOMPONENTS_E2E_TEST") == "true";
+    static readonly bool IsEnabled = Environment.GetEnvironmentVariable("SMARTCOMPONENTS_E2E_TEST") == "true";
 
-    readonly static Lazy<string> CacheDir = new(() =>
+    static readonly Lazy<string> CacheDir = new(() =>
     {
         var dir = Path.Combine(GetSolutionDirectory(), "test", "CachedResponses");
         Directory.CreateDirectory(dir);
