@@ -14,6 +14,10 @@ internal sealed class DefaultSmartComponentsBuilder(IServiceCollection services)
         {
             services.AddSingleton<IChatClient, T>();
         }
+        else
+        {
+            services.AddKeyedSingleton<IChatClient, T>(name);
+        }
 
         return this;
     }
